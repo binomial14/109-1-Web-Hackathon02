@@ -24,23 +24,129 @@ class Sudoku extends Component {
 
     handle_grid_1x1_click = (row_index, col_index) => {
         // TODO
-
+        var r = row_index;
+        var c = col_index;
+        //console.log(this.state.gridValues[r][c]);
+        if(this.state.problem.content[r][c] !== '0')
+        {
+            alert("Can't select");
+            return;
+        }
+        this.setState({selectedGrid: { row_index: row_index, col_index: col_index}});
+        //console.log(this.state.problem.content);
         // Useful hints:
-        // console.log(row_index, col_index)
+        //console.log(row_index, col_index);
+        // console.log(this.state.selectedGrid);
         // console.log(this.state.selectedGrid)
     }
 
     handleKeyDownEvent = (event) => {
         // TODO
-
+        //console.log(this.state.selectedGrid);
+        if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1 && (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) 
+        {
+            //console.log(event.keyCode);
+            var newValues = this.state.gridValues;
+            var new_v = event.keyCode%48;
+            if(new_v !== 0)
+            {
+                if(this.checkConflict(new_v.toString(),this.state.selectedGrid.row_index,this.state.selectedGrid.col_index))
+                {
+                    console.log("conflict!");
+                }
+                else
+                {
+                    newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = new_v;
+                    this.setState({gridValues: newValues});
+                }
+                
+            }
+            else
+            {
+                newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = null;
+                this.setState({gridValues: newValues});
+            }
+            if(this.checkComplete)
+            {
+                //this.setState({ completeFlag: true });
+                //setTimeout(() => { this.setState({ completeFlag: false }); }, 2500);
+                console.log('complete');
+            }
+        }
         // Useful hints:
-        // console.log(event)
+        //console.log(event)
         // if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1 && (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) {}
         // if (this.state.problem.content[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] === "0") {}
     }
 
     handleScreenKeyboardInput = (num) => {
         // TODO
+        //console.log(this.state.gridValues);
+        var newValues = this.state.gridValues;
+        if(num !== 0)
+        {
+            if(this.checkConflict(num.toString(),this.state.selectedGrid.row_index,this.state.selectedGrid.col_index))
+            {
+                console.log("conflict!");
+            }
+            else
+            {
+                newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = num;
+                this.setState({gridValues: newValues});
+            }
+            if(this.checkComplete)
+            {
+                //this.setState({ completeFlag: true });
+                //setTimeout(() => { this.setState({ completeFlag: false }); }, 2500);
+                console.log('complete');
+            }
+        }
+        else
+        {
+            newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = null;
+            this.setState({gridValues: newValues});
+        }
+    }
+
+    checkConflict = (value, r, c) => {
+        var new_c =[];
+        for(var i = 0; i < 9; i++)
+        {
+            new_c.push(this.state.gridValues[i][c]);
+        }
+        var new_squ = [];
+        var r_pivot = r%3;
+        var c_pivot = c%3;
+        for(var i = 0; i < 3; i++)
+        {
+            for(var j = 0; j < 3; j++)
+            {
+                new_squ.push(this.state.gridValues[r-r_pivot+i][c-c_pivot+j])
+            }
+        }
+        //console.log(this.state.gridValues[r]);
+        //console.log(new_c);
+        //console.log(new_squ);
+        if(this.state.gridValues[r].includes(value) || new_c.includes(value) || new_squ.includes(value))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    checkComplete = () => {
+        console.log(this.state.gridValues);
+        if(this.state.gridValues.includes('0'))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     componentDidMount = () => {
