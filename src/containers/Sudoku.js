@@ -43,6 +43,7 @@ class Sudoku extends Component {
     handleKeyDownEvent = (event) => {
         // TODO
         //console.log(this.state.selectedGrid);
+        //console.log(this.state.gridValues)
         if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1 && (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) 
         {
             //console.log(event.keyCode);
@@ -56,22 +57,28 @@ class Sudoku extends Component {
                 }
                 else
                 {
-                    newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = new_v;
+                    newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = new_v.toString();
                     this.setState({gridValues: newValues});
                 }
                 
             }
             else
             {
-                newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = null;
+                newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = "0";
                 this.setState({gridValues: newValues});
             }
-            if(this.checkComplete)
+            //console.log(this.state.gridValues)
+            if(!this.state.gridValues.some(row => row.includes('0')))
             {
-                //this.setState({ completeFlag: true });
-                //setTimeout(() => { this.setState({ completeFlag: false }); }, 2500);
-                console.log('complete');
+                this.setState({ completeFlag: true });
+                setTimeout(() => { this.setState({ completeFlag: false }); }, 2500);
+                //console.log('complete');
             }
+        }
+        else
+        {
+            this.setState({ gameBoardBorderStyle: "8px solid #E77" });
+            setTimeout(() => { this.setState({ gameBoardBorderStyle: "8px solid #333" }); }, 1000);
         }
         // Useful hints:
         //console.log(event)
@@ -81,7 +88,7 @@ class Sudoku extends Component {
 
     handleScreenKeyboardInput = (num) => {
         // TODO
-        //console.log(this.state.gridValues);
+        console.log(this.state.gridValues);
         var newValues = this.state.gridValues;
         if(num !== 0)
         {
@@ -91,19 +98,19 @@ class Sudoku extends Component {
             }
             else
             {
-                newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = num;
+                newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = num.toString();
                 this.setState({gridValues: newValues});
             }
-            if(this.checkComplete)
+            if(!this.state.gridValues.some(row => row.includes('0')))
             {
-                //this.setState({ completeFlag: true });
-                //setTimeout(() => { this.setState({ completeFlag: false }); }, 2500);
-                console.log('complete');
+                this.setState({ completeFlag: true });
+                setTimeout(() => { this.setState({ completeFlag: false }); }, 2500);
+                //console.log('complete');
             }
         }
         else
         {
-            newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = null;
+            newValues[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] = "0";
             this.setState({gridValues: newValues});
         }
     }
@@ -134,18 +141,6 @@ class Sudoku extends Component {
         else
         {
             return false;
-        }
-    }
-
-    checkComplete = () => {
-        console.log(this.state.gridValues);
-        if(this.state.gridValues.includes('0'))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
         }
     }
 
