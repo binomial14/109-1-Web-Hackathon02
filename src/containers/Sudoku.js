@@ -136,10 +136,17 @@ class Sudoku extends Component {
         //console.log(new_squ);
         if(this.state.gridValues[r].includes(value) || new_c.includes(value) || new_squ.includes(value))
         {
+            // console.log(this.state.gridValues[r].indexOf(value));
+            // console.log(new_c.indexOf(value));
+            // console.log(new_squ.indexOf(value));
+            // console.log(Math.floor(r-r_pivot+new_squ.indexOf(value)/3));
+            // console.log(c-c_pivot+new_squ.indexOf(value)%3);
+            this.setState({conflicts: [{ row_index: r, col_index: this.state.gridValues[r].indexOf(value)}, { row_index: new_c.indexOf(value), col_index: c}, { row_index: Math.floor(r-r_pivot+new_squ.indexOf(value)/3), col_index: c-c_pivot+new_squ.indexOf(value)%3}]})
             return true;
         }
         else
         {
+            this.setState({conflicts: [{ row_index: -1, col_index: -1 }]})
             return false;
         }
     }
